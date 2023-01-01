@@ -1,8 +1,0 @@
-const mongoose=require('mongoose')
-
-const Mint=new mongoose.Schema({
-    nft_id: String,
-    minter: String,
-})
-
-export default Mint;
