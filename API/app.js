@@ -11,5 +11,6 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true}));
 
+app.all('*', (req, res)=>res.send('Invalid Request'))
 // app.listen(3000, ()=>console.log('listening at port 5000.'))
 module.exports = app;
