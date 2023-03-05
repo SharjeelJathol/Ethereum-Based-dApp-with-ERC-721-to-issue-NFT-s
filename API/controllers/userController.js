@@ -59,3 +59,12 @@ exports.login = async (req, res) => {
 
 }
 
+exports.logout = async (req, res) => {
+    const cookiesOptions = {
+        expires: new Date(Date.now()+1 * 1000),
+        httpOnly: true
+    }
+    res.cookie('jwt', '', cookiesOptions)
+    res.send('Success')
+}
+
