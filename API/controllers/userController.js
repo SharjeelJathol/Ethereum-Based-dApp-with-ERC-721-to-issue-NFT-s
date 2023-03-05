@@ -107,3 +107,22 @@ exports.public_address = async (req, res) => {
     }
 }
 
+exports.email = async (req, res) => {
+
+    try {
+        let response = await User.findOne({
+            email: req.query.email
+        })
+        console.log('email', req.query.email)
+        if (response) {
+            res.send('True')
+        } else {
+            res.send('False')
+        }
+
+    } catch (err) {
+        console.log(err)
+        res.status(404)
+        res.send('Error');
+    }
+}
