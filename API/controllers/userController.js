@@ -1,3 +1,7 @@
+const User = require('../models/User')
+const jwt = require('jsonwebtoken')
+const bcrypt = require('bcryptjs')
+
 exports.signup = async (req, res) => {
     let newUser = new User({
         public_address: req.body.public_address,
@@ -57,6 +61,10 @@ exports.login = async (req, res) => {
         res.send('Failed')
     }
 
+}
+
+exports.loginStatus= async (req, res)=>{
+    res.send('True')
 }
 
 exports.logout = async (req, res) => {
