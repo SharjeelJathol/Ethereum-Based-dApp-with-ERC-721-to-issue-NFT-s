@@ -87,3 +87,23 @@ exports.username = async (req, res) => {
         res.send('Error');
     }
 }
+
+exports.public_address = async (req, res) => {
+    try {
+        let response = await User.findOne({
+            public_address: req.query.public_address
+        })
+        console.log('public_address', req.query.public_address)
+        if (response) {
+            res.send('True')
+        } else {
+            res.send('False')
+        }
+
+    } catch (err) {
+        console.log(err)
+        res.status(404)
+        res.send('Error');
+    }
+}
+
