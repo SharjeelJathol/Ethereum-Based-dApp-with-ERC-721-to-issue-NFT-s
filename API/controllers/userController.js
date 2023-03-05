@@ -68,3 +68,22 @@ exports.logout = async (req, res) => {
     res.send('Success')
 }
 
+exports.username = async (req, res) => {
+    try {
+        let response = await User.findOne({
+            username: req.query.username
+        })
+        // console.log('Username', req.query.username)
+        console.log(response)
+        if (response) {
+            res.send('True')
+        } else {
+            res.send('False')
+        }
+
+    } catch (err) {
+        console.log(err)
+        res.status(404)
+        res.send('Error');
+    }
+}
