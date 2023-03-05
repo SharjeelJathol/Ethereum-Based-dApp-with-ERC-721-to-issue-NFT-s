@@ -33,3 +33,29 @@ exports.signup = async (req, res) => {
         res.status(404).send('Error')
     }
 }
+
+exports.login = async (req, res) => {
+    let userInfo={password:req.body.password, public_address:req.body.public_address}
+    try {
+        let result=await User.findOne({public_address:req.body.public_address})
+        if (result && bcrypt.compareSync(userInfo.password, result.password)) {
+            const token = jwt.sign({
+                public_address: userInfo.public_address,
+                ip: req.ip
+            }, process.env.PRIVATE_KEY, {
+                algorithm: process.env.ALGORITHM
+            })
+            const cookiesOptions = {
+                expires: new Date(Date.now() + process.env.EXPIRES_IN * 24 * 60 * 60 * 1000),
+                httpOnly: true
+            }
+            res.cookie('jwt', token, cookiesOptions)
+            res.send('Success')
+        }
+    } catch (err) {
+        console.log(err)
+        res.send('Failed')
+    }
+
+}
+
