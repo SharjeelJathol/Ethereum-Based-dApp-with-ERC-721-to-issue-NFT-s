@@ -27,7 +27,7 @@ exports.signup = async (req, res) => {
 
     try {
         let response = await newUser.save();
-        console.log(response);
+        // console.log(response);
         if (response)
             res.send('Success')
         else
@@ -39,12 +39,12 @@ exports.signup = async (req, res) => {
 }
 
 exports.login = async (req, res) => {
-    let userInfo={password:req.body.password, public_address:req.body.public_address}
+    let userInfo={password:req.body.password, username:req.body.username}
     try {
-        let result=await User.findOne({public_address:req.body.public_address})
+        let result=await User.findOne({username:userInfo.username})
         if (result && bcrypt.compareSync(userInfo.password, result.password)) {
             const token = jwt.sign({
-                public_address: userInfo.public_address,
+                public_address: result.public_address,
                 ip: req.ip
             }, process.env.PRIVATE_KEY, {
                 algorithm: process.env.ALGORITHM
@@ -56,6 +56,8 @@ exports.login = async (req, res) => {
             res.cookie('jwt', token, cookiesOptions)
             res.send('Success')
         }
+        else
+            res.send('Failed')
     } catch (err) {
         console.log(err)
         res.send('Failed')
