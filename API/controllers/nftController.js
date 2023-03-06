@@ -1,3 +1,8 @@
+const NFT = require('../models/NFT');
+const crypto = require('crypto');
+const multer = require('multer')
+const {uploadOnIPFS} = require('./ipfsController')
+const fs=require('fs')
 exports.allNFTs = async (req, res) => {
     try {
         let response = await NFT.find({});
@@ -44,6 +49,40 @@ exports.myMintedNFTs=async (req, res)=>{
     }
 }
 
+exports.newNFT = async (req, res) => {
+    try {
+        console.log(req.body)
+        if(req.body.url){
+            let hash=await uploadOnIPFS(req.body.url)
+            hash=hash.cid.toString()
+            let response = await NFT.find({nft_id:hash});
+            if (response.length>0) {
+                fs.unlink(`${__dirname}/../NFTs/${req.body.url}`, err=>{
+                    if(err)
+                        console.log(err)
+                    else
+                        res.send('Duplicate')
+                })
+            } else{
+                console.log('unique')
+                const NFTobj = new NFT({
+                    nft_id: hash,
+                    url: req.query.url,
+                    name: req.body.name,
+                    owner: req.query.public_address,
+                    minter: req.query.public_address,
+                })
+                await NFTobj.save()
+                res.send('Done')
+            }
+        }
+        else
+            res.send('Failed')
+    } catch (err) {
+        console.log(err)
+        res.send('Failed')
+    }
+}
 
 exports.uploadNFTPhoto = multer({ storage: multer.diskStorage({
     destination: function (req, file, cb) {
