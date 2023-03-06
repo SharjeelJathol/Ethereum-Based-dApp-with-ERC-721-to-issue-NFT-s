@@ -29,3 +29,18 @@ exports.myOwnedNFTs=async (req, res)=>{
     }
 }
 
+exports.myMintedNFTs=async (req, res)=>{
+    try {
+        let response = await NFT.find({minted:req.query.public_address});
+        if (response) {
+            console.log(response)
+            res.json(response)
+        } else
+            res.send('Failed')
+
+    } catch (err) {
+        console.log(err)
+        res.status(404).send('Error')
+    }
+}
+
